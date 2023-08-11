@@ -25,12 +25,18 @@ router.get("/", (req, res) => {
     }
 });
 
-router.get("/:idcard", async (req, res) => {
-    const idcard = req.params.idcard;
+router.get("/:date", async (req, res) => {
+    const date = req.params.date;
     try {
         const mysql =
-            'SELECT * FROM account WHERE idcard = ?';
-        connection_local.query(mysql, [idcard], (err, results, fields) => {
+            'SELECT *, TIMESTAMPDIFF(YEAR, birth, ?) AS AGE, (SELECT diagcode FROM visitdiag d WHERE d.visitno = v.visitno AND dxtype = "01" LIMIT 1) AS diagcode ' +
+            'FROM visit v ' +
+            'LEFT JOIN person p ON v.pid = p.pid ' +
+            'LEFT JOIN _tmpprename_code c ON p.prename = c.prenamecode ' +
+            'LEFT JOIN cright r ON v.rightcode = r.rightcode ' +
+            'WHERE visitdate = ? ' +
+            'ORDER BY v.timestart';
+        connection_local.query(mysql, [date, date], (err, results, fields) => {
             // console.log(results.length)
             if (err) {
                 console.log(err);
@@ -40,7 +46,7 @@ router.get("/:idcard", async (req, res) => {
                 console.log(err);
                 return res.status(400).json('Data is not existed!, please try again.');
             }
-            res.status(200).json(results);
+            res.status(200).json({ 'data': results });
         });
     } catch (err) {
         console.log(err);

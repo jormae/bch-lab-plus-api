@@ -1,14 +1,16 @@
-const mysql = require("mysql");
-require("dotenv").config();
+// const express = require("express");
+const mysql = require('mysql')
+require('dotenv').config()
 
+
+//Mysql Connection
 const connection = mysql.createPool({
   connectionLimit: 100,
-  host: process.env.SERVER_HOST,
-  user: process.env.SERVER_USER,
-  password: process.env.SERVER_PASSWORD,
-  database: process.env.SERVER_DATABASE_NAME,
-  port: process.env.SERVER_PORT,
-  // charset: process.env.SERVER_CHARSET,
+  host: process.env.HOST_NAME,
+  user: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+  database: process.env.DB_NAME,
+  port: process.env.DB_PORT,
 });
 
 exports.getConnection = function (callback) {
@@ -16,7 +18,7 @@ exports.getConnection = function (callback) {
     if (err) {
       return callback(err);
     }
-    // connection.query("SET NAMES utf8mb4");
+    //   connection.query("SET NAMES UTF8");
     console.log("Database Server is successfully connected");
     callback(err, conn);
   });

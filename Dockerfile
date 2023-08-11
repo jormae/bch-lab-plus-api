@@ -4,5 +4,5 @@ WORKDIR /app
 COPY . /app
 RUN npm install --production
 COPY . .
-EXPOSE 3301
+EXPOSE 81
 CMD ["npm", "start"]
